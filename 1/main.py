@@ -1,6 +1,5 @@
 import os
 import mysql.connector
-from db import criarBD
 from pathlib import Path
 
 '''Conexao com DB mysql'''
@@ -11,16 +10,11 @@ conexao= mysql.connector.connect(
         password = '',
         database = 'REQ'
     )
+cursor = conexao.cursor()
 
 class requisicoes:
     def __init__(self):
         self.op = 0
-        arquivo = Path("Operadores.db")
-        if arquivo.exists():
-            print("DataBase já criado")
-        else:    
-            criarBD()
-            print("database criado!!!")
 
     def ExecutarMenu(self):
         while self.op!=5:
@@ -33,7 +27,7 @@ class requisicoes:
             elif self.op==3:
                 print("Imprimir")  
             elif self.op==4:
-                print("Alterar")  
+                self.RodarScriptDB(self.Alterar())  
 
     def Menu(self):
         print("""
@@ -49,17 +43,41 @@ class requisicoes:
         """)
         self.op = int(input("Escolha uma opção:"))
 
+    """Método com o Objetivo de realizar a funcao Insert"""
     def Cadastrar(self):
         Chapa = int(input("Informe a Chapa do Colaborador: "))
         Nome = input("Digite o nome do Operador: ")
         ID = 0
-        script = "INSERT INTO OPERADORES (ID, CHAPA, NOME) VALUES ("+ str(ID) +" ,"+ str(Chapa) +",'"+ Nome +"')"
+        script = "INSERT INTO OPERADORES (CHAPA, NOME) VALUES ("+ str(Chapa) +",'"+ Nome +"');"
         return script
     
+    """Método com o Objetivo de realizar a funcao Update"""
+    def Alterar(self):
+        op=0
+        script = ""
+        while op!=3:
+            id = int(input("Informe o ID do Colaborador que deseja alterar: "))
+            op = int(input("Oque voce deseja alterar? 1-Chapa 2-Nome 3-Cancelar: "))
+            match op:
+                case 1:
+                    Chapa = int(input("Informe a nova Chapa do Colaborador: "))
+                    script = "UPDATE OPERADORES SET CHAPA = "+str(Chapa)+" WHERE ID_OPERADOR = "+ str(id)+" ;"
+                case 2:    
+                    Nome = input("Digite o novo nome do Operador: ")
+                    script = "UPDATE OPERADORES SET NOME = '"+ Nome +"' WHERE ID_OPERADOR = "+ str(id)+" ;"     
+                case 3: 
+                    break
+            return script    
+        
+    """Método com o Objetivo de Rodar os Códigos criado na variavel Script"""
     def RodarScriptDB(self, script):
-        conexao = sqlite3.connect('Operadores.db')
-        cursor = conexao.cursor()
-        cursor.execute(script)
+        try:
+            cursor.execute(script)
+            conexao.commit()
+            print("comando realizado")
+        except:
+            print("Comando nao sucedido")
+        
 
 
 obj = requisicoes()
