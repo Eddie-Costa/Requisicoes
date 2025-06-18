@@ -3,6 +3,15 @@ import mysql.connector
 from db import criarBD
 from pathlib import Path
 
+'''Conexao com DB mysql'''
+
+conexao= mysql.connector.connect(
+        host = 'localhost',
+        user = 'root',
+        password = '',
+        database = 'REQ'
+    )
+
 class requisicoes:
     def __init__(self):
         self.op = 0
