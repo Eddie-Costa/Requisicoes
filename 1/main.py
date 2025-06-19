@@ -3,7 +3,6 @@ import mysql.connector
 from pathlib import Path
 
 '''Conexao com DB mysql'''
-
 conexao= mysql.connector.connect(
         host = 'localhost',
         user = 'root',
@@ -16,6 +15,7 @@ class requisicoes:
     def __init__(self):
         self.op = 0
 
+    """Método responsavél por executar o menu e fazer o desvio condicional dependendo da escolha do usuário"""
     def ExecutarMenu(self):
         while self.op!=5:
             self.Menu()
@@ -28,7 +28,8 @@ class requisicoes:
                 print("Imprimir")  
             elif self.op==4:
                 self.RodarScriptDB(self.Alterar())  
-
+                
+    """Menu Principal do Sistema"""
     def Menu(self):
         print("""
                                                     ====================================
